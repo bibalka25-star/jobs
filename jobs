@@ -1,52 +1,24 @@
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local LocalPlayer = Players.LocalPlayer
+repeat wait() until game:IsLoaded()
+local t = 0.7    
 
--- Прозрачный текст на экране
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-ScreenGui.Name = "MalyyText"
-
-local Label = Instance.new("TextLabel", ScreenGui)
-Label.Size = UDim2.new(1, 0, 1, 0)
-Label.Position = UDim2.new(0, 0, 0, 0)
-Label.BackgroundTransparency = 1
-Label.Text = "Made By Malyy"
-Label.TextColor3 = Color3.fromRGB(0, 180, 255)
-Label.TextTransparency = 0.7 -- прозрачность
-Label.Font = Enum.Font.GothamBold
-Label.TextScaled = true
-Label.TextXAlignment = Enum.TextXAlignment.Center
-Label.TextYAlignment = Enum.TextYAlignment.Center
-
--- Функция удаления аксессуаров у конкретного персонажа
-local function removeAccessories(character)
-    for _, item in pairs(character:GetChildren()) do
-        if item:IsA("Accessory") or item:IsA("Hat") then
-            item:Destroy()
+local function trans()
+    task.wait(3)
+    for i,v in pairs(workspace.Plots:GetDescendants()) do
+        if v.Name == "structure base home" and v.Size == Vector3.new(45, 16.999996185302734, 2) then
+            v.Transparency = t
+        elseif v.Name == "structure base home" and v.Size == Vector3.new(45, 44.999996185302734, 2) then
+            v.Transparency = t
+        elseif v.Name == "Decoration" and v.Parent.Name == "Decorations" then
+            v.Transparency = t
+            v.Parent.Part.Transparency = t
+        elseif v.Name == "Main" and v.Parent.Name == "Claim" then
+            v.Transparency = t
+           elseif v.Name == "structure base home" and v.Size == Vector3.new(31, 10.999996185302734, 2) then
+            v.Transparency = t
         end
     end
 end
 
--- Удаляем аксессуары у всех текущих игроков
-for _, plr in pairs(Players:GetPlayers()) do
-    if plr.Character then
-        removeAccessories(plr.Character)
-    end
-end
+trans()
 
--- Автоудаление при спавне персонажей
-Players.PlayerAdded:Connect(function(plr)
-    plr.CharacterAdded:Connect(function(char)
-        task.wait(0.1)
-        removeAccessories(char)
-    end)
-end)
-
--- Постоянная проверка и удаление аксессуаров
-RunService.RenderStepped:Connect(function()
-    for _, plr in pairs(Players:GetPlayers()) do
-        if plr.Character then
-            removeAccessories(plr.Character)
-        end
-    end
-end)
+game:GetService("Players").PlayerAdded:Connect(trans)
