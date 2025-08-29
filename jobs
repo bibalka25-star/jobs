@@ -1,6 +1,6 @@
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
 
 -- Прозрачный текст на экране
 local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
@@ -18,9 +18,8 @@ Label.TextScaled = true
 Label.TextXAlignment = Enum.TextXAlignment.Center
 Label.TextYAlignment = Enum.TextYAlignment.Center
 
--- Функция удаления аксессуаров других игроков
-local function removeAccessories(character, player)
-    if player == LocalPlayer then return end -- свой скин не трогаем
+-- Функция удаления аксессуаров
+local function removeAccessories(character)
     for _, item in pairs(character:GetChildren()) do
         if item:IsA("Accessory") or item:IsA("Hat") then
             item:Destroy()
@@ -28,11 +27,26 @@ local function removeAccessories(character, player)
     end
 end
 
--- Автоматическое включение функции
+-- Удаление аксессуаров у всех существующих игроков
+for _, plr in pairs(Players:GetPlayers()) do
+    if plr.Character then
+        removeAccessories(plr.Character)
+    end
+end
+
+-- Автоматическое удаление при спавне персонажей
+Players.PlayerAdded:Connect(function(plr)
+    plr.CharacterAdded:Connect(function(char)
+        task.wait(0.1)
+        removeAccessories(char)
+    end)
+end)
+
+-- Постоянное обновление (для случаев, если что-то спавнится)
 RunService.RenderStepped:Connect(function()
     for _, plr in pairs(Players:GetPlayers()) do
         if plr.Character then
-            removeAccessories(plr.Character, plr)
+            removeAccessories(plr.Character)
         end
     end
 end)
