@@ -1,0 +1,65 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+-- Таблица для хитбоксов
+local hitboxes = {}
+
+-- Функция убирает скины игрока
+local function removeSkins(character)
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("MeshPart") or part:IsA("Accessory") or part:IsA("Hat") then
+            part:Destroy()
+        elseif part:IsA("Decal") or part:IsA("Texture") then
+            part.Transparency = 1
+        end
+    end
+end
+
+-- Функция создаёт хитбокс
+local function addHitbox(player)
+    local char = player.Character
+    if char and not hitboxes[player] then
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local box = Instance.new("Part")
+            box.Name = "Hitbox"
+            box.Size = Vector3.new(5,5,5)
+            box.Transparency = 0.3
+            box.Color = Color3.fromRGB(255,0,0)
+            box.Anchored = true
+            box.CanCollide = false
+            box.Material = Enum.Material.Neon
+            box.CFrame = hrp.CFrame
+            box.Parent = Workspace
+            hitboxes[player] = box
+        end
+    end
+end
+
+-- Основной цикл
+RunService.RenderStepped:Connect(function()
+    -- Обновляем всех игроков
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr.Character then
+            -- Убираем скины локально
+            removeSkins(plr.Character)
+            
+            -- Добавляем хитбоксы для всех кроме себя
+            if plr ~= LocalPlayer then
+                addHitbox(plr)
+            end
+        end
+    end
+
+    -- Обновляем позиции хитбоксов
+    for plr, box in pairs(hitboxes) do
+        if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            box.CFrame = plr.Character.HumanoidRootPart.CFrame
+        else
+            box:Destroy()
+            hitboxes[plr] = nil
+        end
+    end
+end)
