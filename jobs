@@ -10,7 +10,7 @@ local function removeClothesAndAccessories(character)
     end
 end
 
--- Проверка всех игроков каждое кадро
+-- Проверка всех игроков каждый кадр
 RunService.RenderStepped:Connect(function()
     for _, player in ipairs(Players:GetPlayers()) do
         if player.Character then
@@ -27,4 +27,15 @@ Players.PlayerAdded:Connect(function(player)
     end)
 end)
 
-print("Бесконечное удаление одежды и аксессуаров активно!")
+-- Для игроков, которые уже в игре при запуске скрипта
+for _, player in ipairs(Players:GetPlayers()) do
+    if player.Character then
+        removeClothesAndAccessories(player.Character)
+    end
+    player.CharacterAdded:Connect(function(char)
+        task.wait(0.1)
+        removeClothesAndAccessories(char)
+    end)
+end
+
+print("Бесконечное удаление одежды и аксессуаров активно для всех игроков!")
