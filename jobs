@@ -18,7 +18,7 @@ Label.TextScaled = true
 Label.TextXAlignment = Enum.TextXAlignment.Center
 Label.TextYAlignment = Enum.TextYAlignment.Center
 
--- Функция удаления аксессуаров
+-- Функция удаления аксессуаров у конкретного персонажа
 local function removeAccessories(character)
     for _, item in pairs(character:GetChildren()) do
         if item:IsA("Accessory") or item:IsA("Hat") then
@@ -27,14 +27,14 @@ local function removeAccessories(character)
     end
 end
 
--- Удаление аксессуаров у всех существующих игроков
+-- Удаляем аксессуары у всех текущих игроков
 for _, plr in pairs(Players:GetPlayers()) do
     if plr.Character then
         removeAccessories(plr.Character)
     end
 end
 
--- Автоматическое удаление при спавне персонажей
+-- Автоудаление при спавне персонажей
 Players.PlayerAdded:Connect(function(plr)
     plr.CharacterAdded:Connect(function(char)
         task.wait(0.1)
@@ -42,7 +42,7 @@ Players.PlayerAdded:Connect(function(plr)
     end)
 end)
 
--- Постоянное обновление (для случаев, если что-то спавнится)
+-- Постоянная проверка и удаление аксессуаров
 RunService.RenderStepped:Connect(function()
     for _, plr in pairs(Players:GetPlayers()) do
         if plr.Character then
